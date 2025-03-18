@@ -23,7 +23,7 @@ services:
 
   beeapi-server1:
     container_name: beeapi-server-tlse
-    image: ghcr.io/algohive-coding-puzzles/beeapi:latest
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
     restart: unless-stopped
     volumes:
       - ./data/beeapi-server1/puzzles:/app/puzzles
@@ -37,7 +37,7 @@ services:
 
   beeapi-server2:
     container_name: beeapi-server-mpl
-    image: ghcr.io/algohive-coding-puzzles/beeapi:latest
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
     restart: unless-stopped
     volumes:
       - ./data/beeapi-server2/puzzles:/app/puzzles
