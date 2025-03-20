@@ -9,6 +9,8 @@ services:
       - algohive-network
     env-file:
       - ./beehub.env
+    volumes:
+      - beehub-data:/app/data
 
   beeapi-server-staging:
     container_name: beeapi-server-staging
@@ -25,6 +27,12 @@ services:
       - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
     labels:
       - "algohive.service.type=beeapi"
+
+volumes:
+  beehub-data:
+    name: beehub-data
+  data:
+    name: data
 
 networks:
   algohive-network:
