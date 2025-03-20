@@ -1,0 +1,30 @@
+name: algohive
+services:
+  beehub:
+    container_name: beehub
+    image: ghcr.io/algohive-coding-puzzles/beehub:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - algohive-network
+    env-file:
+      - ./beehub.env
+
+  beeapi-server-staging:
+    container_name: beeapi-server-staging
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/beeapi-server/puzzles:/app/puzzles
+    ports:
+      - "5000:5000"
+    networks:
+      - algohive-network
+    environment:
+      - SERVER_NAME=Ynov-Montpellier-Staging
+      - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
+    labels:
+      - "algohive.service.type=beeapi"
+
+networks:
+  algohive-network:

@@ -21,6 +21,19 @@ services:
   #   networks:
   #     - algohive-network
 
+  beehub:
+    container_name: beehub
+    image: ghcr.io/algohive-coding-puzzles/beehub:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - algohive-network
+    environment:
+      - DISCOVERY_PORT_RANGE_START=5000
+      - DISCOVERY_PORT_RANGE_END=5099
+      - DISCOVERY_ENABLED=true
+      - DISCOVERY_SERVICE_TYPE=beeapi
+
   beeapi-server1:
     container_name: beeapi-server-tlse
     image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
@@ -34,6 +47,8 @@ services:
     environment:
       - SERVER_NAME=Ynov-Toulouse
       - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Toulouse
+    labels:
+      - "algohive.service.type=beeapi"
 
   beeapi-server2:
     container_name: beeapi-server-mpl
@@ -48,6 +63,8 @@ services:
     environment:
       - SERVER_NAME=Ynov-Montpellier
       - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Montpellier
+    labels:
+      - "algohive.service.type=beeapi"
 
   db:
     container_name: algohive-db
