@@ -33,8 +33,8 @@ services:
     volumes:
       - beehub-db:/app/backend/db
     depends_on:
-      - beeapi-server1
-      - beeapi-server2
+      - beeapi-server-tlse
+      - beeapi-server-mpl
       - beeapi-server-staging
 
   beeapi-server-tlse:
