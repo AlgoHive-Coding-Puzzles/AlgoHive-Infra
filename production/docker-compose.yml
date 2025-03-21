@@ -9,23 +9,24 @@ services:
       - cache
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8001:8080"
     networks:
       - algohive-network
 
-  # client:
-  #   image: ghcr.io/eric-philippe/algohive/algohive/client:latest
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - algohive-network
+  client:
+    container_name: algohive-client
+    image: docker pull ghcr.io/algohive-coding-puzzles/client:latest
+    restart: unless-stopped
+    ports:
+      - "7002:8000"
+    networks:
+      - algohive-network
 
   beehub:
     container_name: beehub
     image: ghcr.io/algohive-coding-puzzles/beehub:latest
     ports:
-      - "8081:8081"
+      - "8002:8081"
     networks:
       - algohive-network
     environment:
@@ -66,7 +67,23 @@ services:
     labels:
       - "algohive.service.type=beeapi"
 
-  db:
+  beeapi-server-staging:
+    container_name: beeapi-server-staging
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/beeapi-server/puzzles:/app/puzzles
+    ports:
+      - "5003:5000"
+    networks:
+      - algohive-network
+    environment:
+      - SERVER_NAME=Ynov-Montpellier-Staging
+      - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
+    labels:
+      - "algohive.service.type=beeapi"
+
+  algohive-db:
     container_name: algohive-db
     image: postgres:17-alpine
     restart: unless-stopped
@@ -74,11 +91,11 @@ services:
     volumes:
       - ./data/db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"
     networks:
       - algohive-network
 
-  cache:
+  algohive-cache:
     container_name: algohive-cache
     image: redis:alpine
     restart: always
