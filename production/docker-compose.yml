@@ -1,21 +1,21 @@
 name: algohive
 services:
-  server:
+  algohive-server:
     container_name: algohive-server
     image: ghcr.io/algohive-coding-puzzles/api:latest
     env_file: server.env
     depends_on:
-      - db
-      - cache
+      - algohive-db
+      - algohive-cache
     restart: unless-stopped
     ports:
       - "8001:8080"
     networks:
       - algohive-network
 
-  client:
+  algohive-client:
     container_name: algohive-client
-    image: docker pull ghcr.io/algohive-coding-puzzles/client:latest
+    image: ghcr.io/algohive-coding-puzzles/client:latest
     restart: unless-stopped
     ports:
       - "7002:8000"
@@ -30,13 +30,19 @@ services:
     networks:
       - algohive-network
     env_file: server.env
+    volumes:
+      - beehub-db:/app/backend/db
+    depends_on:
+      - beeapi-server1
+      - beeapi-server2
+      - beeapi-server-staging
 
-  beeapi-server1:
+  beeapi-server-tlse:
     container_name: beeapi-server-tlse
     image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
     restart: unless-stopped
     volumes:
-      - ./data/beeapi-server1/puzzles:/app/puzzles
+      - puzzles-tlse:/app/puzzles
     ports:
       - "5000:5000"
     networks:
@@ -47,12 +53,12 @@ services:
     labels:
       - "algohive.service.type=beeapi"
 
-  beeapi-server2:
+  beeapi-server-mpl:
     container_name: beeapi-server-mpl
     image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
     restart: unless-stopped
     volumes:
-      - ./data/beeapi-server2/puzzles:/app/puzzles
+      - puzzles-mpl:/app/puzzles
     ports:
       - "5001:5000"
     networks:
@@ -68,9 +74,9 @@ services:
     image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
     restart: unless-stopped
     volumes:
-      - ./data/beeapi-server/puzzles:/app/puzzles
+      - puzzles-staging:/app/puzzles
     ports:
-      - "5003:5000"
+      - "5002:5000"
     networks:
       - algohive-network
     environment:
@@ -85,7 +91,7 @@ services:
     restart: unless-stopped
     env_file: server.env
     volumes:
-      - ./data/db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
     networks:
@@ -102,6 +108,10 @@ services:
 
 volumes:
   db-data:
+  puzzles-tlse:
+  puzzles-mpl:
+  puzzles-staging:
+  beehub-db:
 
 networks:
   algohive-network:
