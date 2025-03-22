@@ -1,0 +1,118 @@
+name: algohive
+services:
+  algohive-server:
+    container_name: algohive-server
+    image: ghcr.io/algohive-coding-puzzles/api:latest
+    env_file: development.env
+    depends_on:
+      - algohive-db
+      - algohive-cache
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - algohive-network
+
+  # Useless since the client is now a static website aiming for the production server
+  # algohive-client:
+  #   container_name: algohive-client
+  #   image: ghcr.io/algohive-coding-puzzles/client:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     - algohive-network
+
+  beehub:
+    container_name: beehub
+    image: ghcr.io/algohive-coding-puzzles/beehub:latest
+    ports:
+      - "8002:8081"
+    networks:
+      - algohive-network
+    env_file: development.env
+    volumes:
+      - beehub-db:/app/backend/db
+    depends_on:
+      - beeapi-server-tlse
+      - beeapi-server-mpl
+      - beeapi-server-staging
+
+  beeapi-server-tlse:
+    container_name: beeapi-server-tlse
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - puzzles-tlse:/app/puzzles
+    ports:
+      - "5000:5000"
+    networks:
+      - algohive-network
+    environment:
+      - SERVER_NAME=Ynov-Toulouse
+      - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Toulouse
+    labels:
+      - "algohive.service.type=beeapi"
+
+  beeapi-server-mpl:
+    container_name: beeapi-server-mpl
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - puzzles-mpl:/app/puzzles
+    ports:
+      - "5001:5000"
+    networks:
+      - algohive-network
+    environment:
+      - SERVER_NAME=Ynov-Montpellier
+      - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Montpellier
+    labels:
+      - "algohive.service.type=beeapi"
+
+  beeapi-server-staging:
+    container_name: beeapi-server-staging
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - puzzles-staging:/app/puzzles
+    ports:
+      - "5002:5000"
+    networks:
+      - algohive-network
+    environment:
+      - SERVER_NAME=Ynov-Montpellier-Staging
+      - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
+    labels:
+      - "algohive.service.type=beeapi"
+
+  algohive-db:
+    container_name: algohive-db
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file: development.env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - algohive-network
+
+  algohive-cache:
+    container_name: algohive-cache
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - algohive-network
+
+volumes:
+  db-data:
+  puzzles-tlse:
+  puzzles-mpl:
+  puzzles-staging:
+  beehub-db:
+
+networks:
+  algohive-network:
