@@ -1,6 +1,7 @@
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
+  retention.time: 5d
 
 scrape_configs:
   - job_name: "algohive-api"
