@@ -6,7 +6,7 @@ scrape_configs:
   - job_name: "algohive-api"
     metrics_path: "/api/v1/metrics"
     static_configs:
-      - targets: ["algohive-server:8001"]
+      - targets: ["algohive-server:8080"]
 
   - job_name: "prometheus"
     static_configs:
