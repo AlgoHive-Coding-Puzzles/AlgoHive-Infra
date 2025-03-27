@@ -235,6 +235,36 @@
           "legendFormat": "{{period}}"
         }
       ]
+    },
+    {
+      "title": "Rate Limiter Cooldowns",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 36
+      },
+      "targets": [
+        {
+          "expr": "rate(algohive_rate_limiter_cooldowns_total[5m])",
+          "legendFormat": "{{threshold}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "value": 0, "color": "green" },
+              { "value": 5, "color": "yellow" },
+              { "value": 10, "color": "red" }
+            ]
+          }
+        }
+      }
     }
   ]
 }
