@@ -12,6 +12,10 @@ services:
       - "8001:8080"
     networks:
       - algohive-network
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   algohive-client:
     container_name: algohive-client
@@ -21,6 +25,10 @@ services:
       - "7002:80"
     networks:
       - algohive-network
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   beehub:
     container_name: beehub
@@ -30,7 +38,10 @@ services:
     networks:
       - algohive-network
     env_file: server.env
+    environment:
+      - TZ=Europe/Paris
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - beehub-db:/app/backend/db
     depends_on:
       - beeapi-server-tlse
@@ -48,6 +59,7 @@ services:
     networks:
       - algohive-network
     environment:
+      - TZ=Europe/Paris
       - SERVER_NAME=Ynov-Toulouse
       - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Toulouse
     labels:
@@ -64,6 +76,7 @@ services:
     networks:
       - algohive-network
     environment:
+      - TZ=Europe/Paris
       - SERVER_NAME=Ynov-Montpellier
       - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Montpellier
     labels:
@@ -80,6 +93,7 @@ services:
     networks:
       - algohive-network
     environment:
+      - TZ=Europe/Paris
       - SERVER_NAME=Ynov-Montpellier-Staging
       - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
     labels:
@@ -90,7 +104,10 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     env_file: server.env
+    environment:
+      - TZ=Europe/Paris
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - db-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
@@ -105,11 +122,16 @@ services:
       - "6379:6379"
     networks:
       - algohive-network
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
@@ -124,14 +146,18 @@ services:
     networks:
       - algohive-network
     restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
+      - TZ=Europe/Paris
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
