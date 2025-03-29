@@ -12,6 +12,10 @@ services:
       - "8080:8080"
     networks:
       - algohive-network
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
   # Useless since the client is now a static website aiming for the production server
   # algohive-client:
@@ -91,7 +95,10 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     env_file: development.env
+    environment:
+      - TZ=Europe/Paris
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - db-data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
@@ -106,6 +113,10 @@ services:
       - "6379:6379"
     networks:
       - algohive-network
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
 
 volumes:
   db-data:
