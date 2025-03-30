@@ -82,6 +82,23 @@ services:
     labels:
       - "algohive.service.type=beeapi"
 
+  beeapi-server-lyon:
+    container_name: beeapi-server-lyon
+    image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
+    restart: unless-stopped
+    volumes:
+      - puzzles-lyon:/app/puzzles
+    ports:
+      - "5002:5000"
+    networks:
+      - algohive-network
+    environment:
+      - TZ=Europe/Paris
+      - SERVER_NAME=Ynov-Lyon
+      - SERVER_DESCRIPTION=This is the server containing puzzles for all the students at Ynov Lyon
+    labels:
+      - "algohive.service.type=beeapi"
+
   beeapi-server-staging:
     container_name: beeapi-server-staging
     image: ghcr.io/algohive-coding-puzzles/beeapi-go:latest
@@ -89,13 +106,13 @@ services:
     volumes:
       - puzzles-staging:/app/puzzles
     ports:
-      - "5002:5000"
+      - "5003:5000"
     networks:
       - algohive-network
     environment:
       - TZ=Europe/Paris
-      - SERVER_NAME=Ynov-Montpellier-Staging
-      - SERVER_DESCRIPTION=This is the sandbox staging server for M1 students to create puzzles.
+      - SERVER_NAME=Ynov-Staging
+      - SERVER_DESCRIPTION=This is the sandbox staging server for trying puzzles
     labels:
       - "algohive.service.type=beeapi"
 
@@ -173,6 +190,7 @@ volumes:
   db-data:
   puzzles-tlse:
   puzzles-mpl:
+  puzzles-lyon:
   puzzles-staging:
   beehub-db:
   grafana_data:
